@@ -4,7 +4,7 @@
  * and open the template in the editor.
  */
 
-/* 
+/*
  * File:   AbstractGraph.h
  * Author: LTSACH
  *
@@ -18,318 +18,459 @@
 #include <sstream>
 using namespace std;
 
-
-template<class T>
-class AbstractGraph: public IGraph<T>{
+template <class T>
+class AbstractGraph : public IGraph<T>
+{
 public:
-    class Edge; //forward declaration
-    class VertexNode; //forward declaration
-    class Iterator; //forward declaration
-    
+    class Edge;       // forward declaration
+    class VertexNode; // forward declaration
+    class Iterator;   // forward declaration
 private:
 protected:
-    //Using the adjacent list technique, so need to store list of nodes (nodeList)
-    DLinkedList<VertexNode*> nodeList; 
-    
-    //Function pointers:
-    bool (*vertexEQ)(T&, T&); //to compare two vertices
-    string (*vertex2str)(T&); //to obtain string representation of vertices
-    
-    
-    VertexNode* getVertexNode(T& vertex){
-        typename DLinkedList<VertexNode*>::Iterator it = nodeList.begin();
-        while(it != nodeList.end()){
-            VertexNode* node = *it;
-            if(vertexEQ(node->vertex, vertex) ) return node;
+    // Using the adjacent list technique, so need to store list of nodes (nodeList)
+    DLinkedList<VertexNode *> nodeList;
+
+    // Function pointers:
+    bool (*vertexEQ)(T &, T &); // to compare two vertices
+    string (*vertex2str)(T &);  // to obtain string representation of vertices
+
+    VertexNode *getVertexNode(T &vertex)
+    {
+        typename DLinkedList<VertexNode *>::Iterator it = nodeList.begin();
+        while (it != nodeList.end())
+        {
+            VertexNode *node = *it;
+            if (vertexEQ(node->vertex, vertex))
+            {
+                return node;
+            }
             it++;
         }
-        return 0;
+        return nullptr;
     }
-    string vertex2Str(VertexNode& node){
+    string vertex2Str(VertexNode &node)
+    {
         return vertex2str(node.vertex);
     }
-    string edge2Str(Edge& edge){
+    string edge2Str(Edge &edge)
+    {
         stringstream os;
-        os << "E("
-                << vertex2str(edge.from->vertex)
-                << ","
-                << vertex2str(edge.to->vertex)
-                << ")";
+        os << "E(" << vertex2str(edge.from->vertex) << "," << vertex2str(edge.to->vertex) << ")";
         return os.str();
     }
-    
+
 public:
-    AbstractGraph(
-            bool (*vertexEQ)(T&, T&)=0, 
-            string (*vertex2str)(T&)=0){
-        
+    AbstractGraph(bool (*vertexEQ)(T &, T &) = 0, string (*vertex2str)(T &) = 0)
+    {
         this->vertexEQ = vertexEQ;
         this->vertex2str = vertex2str;
     }
-    virtual ~AbstractGraph(){}
-    
-    typedef bool (*vertexEQFunc)(T&, T&);
-    typedef string (*vertex2strFunc)(T&);
-    vertexEQFunc getVertexEQ(){
+    virtual ~AbstractGraph() {}
+
+    typedef bool (*vertexEQFunc)(T &, T &);
+    typedef string (*vertex2strFunc)(T &);
+    vertexEQFunc getVertexEQ()
+    {
         return this->vertexEQ;
     }
-    vertex2strFunc getVertex2Str(){
+    vertex2strFunc getVertex2Str()
+    {
         return this->vertex2str;
     }
 
-    
-//////////////////////////////////////////////////////////////////////
-//////////////////// IMPLEMENTATION of IGraph API ////////////////////
-//////////////////////////////////////////////////////////////////////
+    //////////////////////////////////////////////////////////////////////
+    //////////////////// IMPLEMENTATION of IGraph API ////////////////////
+    //////////////////////////////////////////////////////////////////////
     /* connect, disconnect, and remove: will be overridden in:
      *  >> UGraphModel
      *  >> DGraphModel
      */
-    virtual void connect(T from, T to, float weight=0) =0;
-    virtual void disconnect(T from, T to)=0;
-    virtual void remove(T vertex)=0;
-    
-    
-    
+    virtual void connect(T from, T to, float weight = 0) = 0;
+    virtual void disconnect(T from, T to) = 0;
+    virtual void remove(T vertex) = 0;
+
     /* The following are common methods for UGraphModel and DGraphModel
      */
-    virtual void add(T vertex) {
-        //TODO
+    // (Finished)
+    virtual void add(T vertex)
+    {
+        VertexNode *node = new VertexNode(vertex, vertexEQ, vertex2str);
+        nodeList.add(node);
     }
-    virtual bool contains(T vertex){
-        //TODO
+    // (Finished)
+    virtual bool contains(T vertex)
+    {
+        VertexNode *node = getVertexNode(vertex);
+        return (node != nullptr);
     }
-    virtual float weight(T from, T to){
-        //TODO
+    // (Finished)
+    virtual float weight(T from, T to)
+    {
+        VertexNode *from_node = getVertexNode(from);
+        if (node == nullptr)
+        {
+            throw VertexNotFoundException(this->vertex2str(from));
+        }
+        VertexNode *to_node = getVertexNode(to);
+        if (node == nullptr)
+        {
+            throw VertexNotFoundException(this->vertex2str(to));
+        }
+        Edge *edge = from_node->getEdge(to_node);
+        if (edge == nullptr)
+        {
+            throw EdgeNotFoundException(this->edge2str(edge));
+        }
+        return edge->weight;
     }
-    virtual DLinkedList<T> getOutwardEdges(T from){
-        //TODO
+    // (Finished)
+    virtual DLinkedList<T> getOutwardEdges(T from)
+    {
+        VertexNode *from_node = getVertexNode(from);
+        if (from_node == nullptr)
+        {
+            throw VertexNotFoundException(this->vertex2str(from));
+        }
+        return from_node->getOutwardEdges();
     }
-    
-    virtual DLinkedList<T>  getInwardEdges(T to){
-        //TODO
+    // (Finished)
+    virtual DLinkedList<T> getInwardEdges(T to)
+    {
+        VertexNode *to_node = getVertexNode(to);
+        if (to_node == nullptr)
+        {
+            throw VertexNotFoundException(this->vertex2str(to));
+        }
+        DLinkedList<T> return_list;
+        auto it = this->nodeList.begin();
+        while (it != this->nodeList.end())
+        {
+            VertexNode *current_node = *it;
+            Edge *edge = current_node->getEdge(to_node);
+            if (edge != nullptr)
+            {
+                return_list.add(current_node->vertex);
+            }
+            it++;
+        }
+        return return_list;
     }
-    
-    virtual int size() {
-        //TODO
+    // (Finished)
+    virtual int size()
+    {
+        return nodeList.size();
     }
-    virtual bool empty(){
-        //TODO
+    // (Finished)
+    virtual bool empty()
+    {
+        return nodeList.empty();
     };
-    virtual void clear(){
-        //TODO
+    // (Finished)
+    virtual void clear()
+    {
+        nodeList.clear();
     }
-    virtual int inDegree(T vertex){
-        //TODO
+    virtual int inDegree(T vertex)
+    {
+        VertexNode *node = getVertexNode(vertex);
+        if (node == nullptr)
+        {
+            throw VertexNotFoundException(this->vertex2str(vertex));
+        }
+        return node->inDegree();
     }
-    virtual int outDegree(T vertex){
-        //TODO
+    virtual int outDegree(T vertex)
+    {
+        VertexNode *node = getVertexNode(vertex);
+        if (node == nullptr)
+        {
+            throw VertexNotFoundException(this->vertex2str(vertex));
+        }
+        return node->outDegree();
     }
-    
-    virtual DLinkedList<T> vertices(){
-        //TODO
+    // (Finished)
+    virtual DLinkedList<T> vertices()
+    {
+        DLinkedList<T> return_list;
+        auto it = this->nodeList.begin();
+        while (it != this->nodeList.end())
+        {
+            VertexNode *current_node = *it;
+            return_list.add(current_node->vertex);
+            it++;
+        }
+        return return_list;
     }
-    virtual bool connected(T from, T to){
-        //TODO
+    // (Finished)
+    virtual bool connected(T from, T to)
+    {
+        VertexNode *from_node = getVertexNode(from);
+        if (from_node == nullptr)
+        {
+            throw VertexNotFoundException(this->vertex2str(from));
+        }
+        VertexNode *to_node = getVertexNode(to);
+        if (to_node == nullptr)
+        {
+            throw VertexNotFoundException(this->vertex2str(to));
+        }
+        Edge *edge = from_node->getEdge(to_node);
+        return (edge != nullptr);
     }
-    void println(){
+    void println()
+    {
         cout << this->toString() << endl;
     }
-    virtual string toString(){
+    virtual string toString()
+    {
         string mark(50, '=');
         stringstream os;
         os << mark << endl;
         os << left << setw(12) << "Vertices:" << endl;
-        typename DLinkedList<VertexNode*>::Iterator nodeIt = nodeList.begin();
-        while(nodeIt != nodeList.end()){
-            VertexNode* node = *nodeIt;
+        typename DLinkedList<VertexNode *>::Iterator nodeIt = nodeList.begin();
+        while (nodeIt != nodeList.end())
+        {
+            VertexNode *node = *nodeIt;
             os << node->toString() << endl;
             nodeIt++;
         }
         string mark2(30, '-');
         os << mark2 << endl;
-        
+
         os << left << setw(12) << "Edges:" << endl;
-        
+
         nodeIt = nodeList.begin();
-        while(nodeIt != nodeList.end()){
-            VertexNode* node = *nodeIt;
-            
-            typename DLinkedList<Edge*>::Iterator edgeIt = node->adList.begin();
-            while(edgeIt != node->adList.end()){
-                Edge* edge = *edgeIt;
+        while (nodeIt != nodeList.end())
+        {
+            VertexNode *node = *nodeIt;
+
+            typename DLinkedList<Edge *>::Iterator edgeIt = node->adList.begin();
+            while (edgeIt != node->adList.end())
+            {
+                Edge *edge = *edgeIt;
                 os << edge->toString() << endl;
-                
+
                 edgeIt++;
             }
-            
             nodeIt++;
         }
         os << mark << endl;
         return os.str();
     }
-    
+
     /* begin, end: will be used to traverse on graph's vertices
      * example: assume that "graph" is a graph.
      * Code:
      *      AbstractGraph<T>::Iterator it;
      *      for(it = graph.begin(); it != graph.end(); it++){
-     *          T vertex = *it; 
+     *          T vertex = *it;
      *          //continue to process vertex here!
      *      }
      */
-    Iterator begin(){
+    Iterator begin()
+    {
         return Iterator(this, true);
     }
-    Iterator end(){
+    Iterator end()
+    {
         return Iterator(this, false);
     }
 
-//////////////////////////////////////////////////////////////////////
-////////////////////////  INNER CLASSES DEFNITION ////////////////////
-//////////////////////////////////////////////////////////////////////
-    
+    //////////////////////////////////////////////////////////////////////
+    ////////////////////////  INNER CLASSES DEFNITION ////////////////////
+    //////////////////////////////////////////////////////////////////////
+
 public:
-//BEGIN of VertexNode    
-    class VertexNode{
+    // BEGIN of VertexNode
+    class VertexNode
+    {
     private:
-        template<class U>
-        friend class UGraphModel; //UPDATED: added
+        template <class U>
+        friend class UGraphModel; // UPDATED: added
         T vertex;
         int inDegree_, outDegree_;
-        DLinkedList<Edge*> adList; 
+        DLinkedList<Edge *> adList;
         friend class Edge;
         friend class AbstractGraph;
-        
-        bool (*vertexEQ)(T&, T&);
-        string (*vertex2str)(T&);
-        
+
+        bool (*vertexEQ)(T &, T &);
+        string (*vertex2str)(T &);
+
     public:
-        VertexNode():adList(&DLinkedList<Edge*>::free, &Edge::edgeEQ){}
-        VertexNode(T vertex, bool (*vertexEQ)(T&, T&), string (*vertex2str)(T&))
-            :adList(&DLinkedList<Edge*>::free, &Edge::edgeEQ){
+        VertexNode() : adList(&DLinkedList<Edge *>::free, &Edge::edgeEQ) {}
+        VertexNode(T vertex, bool (*vertexEQ)(T &, T &), string (*vertex2str)(T &)) : adList(&DLinkedList<Edge *>::free, &Edge::edgeEQ)
+        {
             this->vertex = vertex;
             this->vertexEQ = vertexEQ;
             this->vertex2str = vertex2str;
             this->outDegree_ = this->inDegree_ = 0;
         }
-        T& getVertex(){
+        // (Finished) (S) //
+        T &getVertex()
+        {
             return vertex;
         }
-        void connect(VertexNode* to, float weight=0){
-            //TODO
+        // (Finished)
+        void connect(VertexNode *to, float weight = 0)
+        {
+            Edge *edge = new Edge(this, to, weight);
+            this->adList.add(edge);
+            to->inDegree_ += 1;
+            this->outDegree_ += 1;
         }
-        DLinkedList<T> getOutwardEdges(){
-            //TODO
+        // (Finished)
+        DLinkedList<T> getOutwardEdges()
+        {
+            DLinkedList<T> return_list;
+            auto it = this->adList.begin();
+            while (it != this->adList.end())
+            {
+                Edge *current_edge = *it;
+                list.add(current_edge->to->vertex);
+                it++;
+            }
+            return return_list;
         }
-
-        Edge* getEdge(VertexNode* to){
-            //TODO
+        // (Finished)
+        Edge *getEdge(VertexNode *to)
+        {
+            Edge *edge = new Edge(this, to);
+            auto it = this->adList.begin();
+            while (it != this->adList.end())
+            {
+                Edge *current_edge = *it;
+                if (current_edge->equals(edge))
+                {
+                    return current_edge;
+                }
+                it++;
+            }
+            return nullptr;
         }
-        bool equals(VertexNode* node){
-            //TODO
+        // (Finished) //
+        bool equals(VertexNode *node)
+        {
+            return this->vertexEQ(this->vertex, node->vertex);
         }
-        
-        void removeTo(VertexNode* to){
-            //TODO
+        // (Finished) //
+        void removeTo(VertexNode *to)
+        {
+            Edge *edge = new Edge(this, to);
+            bool removed = this->adList.removeItem(edge);
+            if (removed == true)
+            {
+                to->inDegree_ -= 1;
+                this->outDegree_ -= 1;
+            }
         }
-        int inDegree(){
-            //TODO
+        // (Finished) //
+        int inDegree()
+        {
+            return this->inDegree_;
         }
-        int outDegree(){
-            //TODO
+        // (Finished) //
+        int outDegree()
+        {
+            return this->outDegree_;
         }
-        string toString(){
+        string toString()
+        {
             stringstream os;
-            os << "V("
-                    << this->vertex << ", "
-                    << "in: " << this->inDegree_ << ", "
-                    << "out: " << this->outDegree_ << ")";
+            os << "V(" << this->vertex << ", " << "in: " << this->inDegree_ << ", " << "out: " << this->outDegree_ << ")";
             return os.str();
         }
     };
-//END of VertexNode    
-    
-//BEGIN of Edge
-    class Edge{
+    // END of VertexNode
+
+    // BEGIN of Edge
+    class Edge
+    {
     private:
-        VertexNode* from;
-        VertexNode* to;
+        VertexNode *from;
+        VertexNode *to;
         float weight;
         friend class VertexNode;
         friend class AbstractGraph;
-        
+
     public:
-        Edge(){}
-        Edge(VertexNode* from, VertexNode* to, float weight=0){
+        Edge() {}
+        Edge(VertexNode *from, VertexNode *to, float weight = 0)
+        {
             this->from = from;
             this->to = to;
             this->weight = weight;
         }
-        
-        bool equals(Edge* edge){
-            //TODO
+        // (Finished)
+        bool equals(Edge *edge)
+        {
+            return (this->from == edge->from && this->to == edge->to);
         }
-
-        static bool edgeEQ(Edge*& edge1, Edge*& edge2){
+        // (Finished) (S) //
+        static bool edgeEQ(Edge *&edge1, Edge *&edge2)
+        {
             return edge1->equals(edge2);
         }
-        string toString(){
+        // (Finished) (S) //
+        string toString()
+        {
             stringstream os;
-            os << "E("
-                    << this->from->vertex
-                    << ","
-                    << this->to->vertex
-                    << ","
-                    << this->weight
-                    << ")";
+            os << "E(" << this->from->vertex << "," << this->to->vertex << "," << this->weight << ")";
             return os.str();
         }
     };
- //END of Edge
-    
+    // END of Edge
 
-//BEGIN of Iterator
+    // BEGIN of Iterator
 public:
-    class Iterator{
+    class Iterator
+    {
     private:
-        typename DLinkedList<VertexNode*>::Iterator nodeIt;
-        
+        typename DLinkedList<VertexNode *>::Iterator nodeIt;
+
     public:
-        Iterator(AbstractGraph<T>* pGraph=0, bool begin=true){
-            if(begin) {
-                if(pGraph != 0) nodeIt = pGraph->nodeList.begin();
+        Iterator(AbstractGraph<T> *pGraph = 0, bool begin = true)
+        {
+            if (begin)
+            {
+                if (pGraph != 0)
+                    nodeIt = pGraph->nodeList.begin();
             }
-            else{
-                if(pGraph != 0) nodeIt = pGraph->nodeList.end();
+            else
+            {
+                if (pGraph != 0)
+                    nodeIt = pGraph->nodeList.end();
             }
         }
-        Iterator& operator=(const Iterator& iterator){
+        Iterator &operator=(const Iterator &iterator)
+        {
             this->nodeIt = iterator.nodeIt;
             return *this;
         }
-        
-        T& operator*(){
+
+        T &operator*()
+        {
             return (*nodeIt)->vertex;
         }
-        
-        bool operator!=(const Iterator& iterator){
+
+        bool operator!=(const Iterator &iterator)
+        {
             return nodeIt != iterator.nodeIt;
         }
-        // Prefix ++ overload 
-        Iterator& operator++(){
+        // Prefix ++ overload
+        Iterator &operator++()
+        {
             nodeIt++;
-            return *this; 
+            return *this;
         }
-        // Postfix ++ overload 
-        Iterator operator++(int){
-            Iterator iterator = *this; 
-            ++*this; 
-            return iterator; 
+        // Postfix ++ overload
+        Iterator operator++(int)
+        {
+            Iterator iterator = *this;
+            ++*this;
+            return iterator;
         }
     };
-//END of Iterator
+    // END of Iterator
 };
 
 #endif /* ABSTRACTGRAPH_H */
-
