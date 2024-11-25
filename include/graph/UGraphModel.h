@@ -15,7 +15,7 @@
 #define UGRAPHMODEL_H
 
 #include "graph/AbstractGraph.h"
-#include "stacknqueue/PriorityQueue.h"
+// #include "stacknqueue/PriorityQueue.h"
 
 //////////////////////////////////////////////////////////////////////
 ///////////// UGraphModel: Undirected Graph Model ////////////////////
