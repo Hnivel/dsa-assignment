@@ -119,7 +119,9 @@ public:
         Edge *edge = from_node->getEdge(to_node);
         if (edge == nullptr)
         {
-            throw EdgeNotFoundException(this->edge2str(edge));
+            stringstream os;
+            os << "E(" << this->vertex2str(from) << "," << this->vertex2str(to) << ")";
+            throw EdgeNotFoundException(os.str());
         }
         return edge->weight;
     }
