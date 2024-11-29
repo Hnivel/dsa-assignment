@@ -33,12 +33,12 @@ public:
     // (Finished)
     void connect(T from, T to, float weight = 0)
     {
-        VertexNode *from_node = this->getVertexNode(from);
+        typename AbstractGraph<T>::VertexNode *from_node = this->getVertexNode(from);
         if (from_node == nullptr)
         {
             throw VertexNotFoundException(this->vertex2str(from));
         }
-        VertexNode *to_node = this->getVertexNode(to);
+        typename AbstractGraph<T>::VertexNode *to_node = this->getVertexNode(to);
         if (to_node == nullptr)
         {
             throw VertexNotFoundException(this->vertex2str(to));
@@ -48,27 +48,27 @@ public:
     // (Finished)
     void disconnect(T from, T to)
     {
-        VertexNode *from_node = this->getVertexNode(from);
+        typename AbstractGraph<T>::VertexNode *from_node = this->getVertexNode(from);
         if (from_node == nullptr)
         {
             throw VertexNotFoundException(this->vertex2str(from));
         }
-        VertexNode *to_node = this->getVertexNode(to);
+        typename AbstractGraph<T>::VertexNode *to_node = this->getVertexNode(to);
         if (to_node == nullptr)
         {
             throw VertexNotFoundException(this->vertex2str(to));
         }
-        Edge *edge = from_node->getEdge(to_node);
+        typename AbstractGraph<T>::Edge *edge = from_node->getEdge(to_node);
         if (edge == nullptr)
         {
             throw EdgeNotFoundException(this->edge2Str(*edge));
         }
-        from_node->adList.removeItem(edge);
+        from_node->removeTo(to_node);
     }
     // (Finished)
     void remove(T vertex)
     {
-        VertexNode *node = this->getVertexNode(vertex);
+        typename AbstractGraph<T>::VertexNode *node = this->getVertexNode(vertex);
         if (node == nullptr)
         {
             throw VertexNotFoundException(this->vertex2str(vertex));
@@ -76,8 +76,9 @@ public:
         auto it = this->nodeList.begin();
         while (it != this->nodeList.end())
         {
-            VertexNode *current_node = *it;
+            typename AbstractGraph<T>::VertexNode *current_node = *it;
             current_node->removeTo(node);
+            node->removeTo(current_node); //
             it++;
         }
         this->nodeList.removeItem(node);

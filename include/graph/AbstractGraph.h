@@ -107,12 +107,12 @@ public:
     virtual float weight(T from, T to)
     {
         VertexNode *from_node = getVertexNode(from);
-        if (node == nullptr)
+        if (from_node == nullptr)
         {
             throw VertexNotFoundException(this->vertex2str(from));
         }
         VertexNode *to_node = getVertexNode(to);
-        if (node == nullptr)
+        if (to_node == nullptr)
         {
             throw VertexNotFoundException(this->vertex2str(to));
         }
@@ -328,7 +328,7 @@ public:
             while (it != this->adList.end())
             {
                 Edge *current_edge = *it;
-                list.add(current_edge->to->vertex);
+                return_list.add(current_edge->to->vertex);
                 it++;
             }
             return return_list;
@@ -357,7 +357,11 @@ public:
         // (Finished) //
         void removeTo(VertexNode *to)
         {
-            Edge *edge = new Edge(this, to);
+            Edge *edge = this->getEdge(to);
+            if (edge == nullptr)
+            {
+                return;
+            }
             bool removed = this->adList.removeItem(edge);
             if (removed == true)
             {

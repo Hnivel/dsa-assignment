@@ -1,6 +1,7 @@
 {
     "files.associations": {
         "*.asm": "mips",
-        "iosfwd": "cpp"
+        "iosfwd": "cpp",
+        "iostream": "cpp"
     }
 }

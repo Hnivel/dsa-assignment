@@ -19,17 +19,23 @@ namespace fs = std::filesystem;
 #include "optim/Adam.h"
 #include "modelzoo/twoclasses.h"
 #include "modelzoo/threeclasses.h"
+#include "graph/UGraphDemo.h"
+#include "graph/DGraphDemo.h"
 
+int main(int argc, char **argv)
+{
+    // dataloader:
+    // case_data_wo_label_1();
+    // case_data_wi_label_1();
+    // case_batch_larger_nsamples();
 
-int main(int argc, char** argv) {
-    //dataloader:
-    //case_data_wo_label_1();
-    //case_data_wi_label_1();
-    //case_batch_larger_nsamples();
-    
-    //Classification:
-    twoclasses_classification();
-    //threeclasses_classification();
- 
+    // Classification:
+    /// twoclasses_classification();
+    // threeclasses_classification();
+    DGraphDemo1();
+    ugraphDemo1();
+    ugraphDemo2();
+    DGraphDemo4();
+    // ugraphDemo3();
     return 0;
 }

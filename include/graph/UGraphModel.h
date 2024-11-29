@@ -33,12 +33,12 @@ public:
     // (Finished)
     void connect(T from, T to, float weight = 0)
     {
-        VertexNode *from_node = this->getVertexNode(from);
+        typename AbstractGraph<T>::VertexNode *from_node = this->getVertexNode(from);
         if (from_node == nullptr)
         {
             throw VertexNotFoundException(this->vertex2str(from));
         }
-        VertexNode *to_node = this->getVertexNode(to);
+        typename AbstractGraph<T>::VertexNode *to_node = this->getVertexNode(to);
         if (to_node == nullptr)
         {
             throw VertexNotFoundException(this->vertex2str(to));
@@ -56,30 +56,48 @@ public:
     // (Finished)
     void disconnect(T from, T to)
     {
-        VertexNode *from_node = this->getVertexNode(from);
+        typename AbstractGraph<T>::VertexNode *from_node = this->getVertexNode(from);
         if (from_node == nullptr)
         {
             throw VertexNotFoundException(this->vertex2str(from));
         }
-        VertexNode *to_node = this->getVertexNode(to);
+        typename AbstractGraph<T>::VertexNode *to_node = this->getVertexNode(to);
         if (to_node == nullptr)
         {
             throw VertexNotFoundException(this->vertex2str(to));
         }
-        if (from == to)
+        if (from_node->equals(to_node))
         {
-            from_node->disconnect(to_node);
+            typename AbstractGraph<T>::Edge *edge = from_node->getEdge(to_node);
+            if (edge == nullptr)
+            {
+                string edge_string = "E(" + this->vertex2str(from) + "," + this->vertex2str(to) + ")";
+                throw EdgeNotFoundException(edge_string);
+            }
+            from_node->removeTo(to_node);
         }
         else
         {
-            from_node->disconnect(to_node);
-            to_node->disconnect(from_node);
+            typename AbstractGraph<T>::Edge *edge_1 = from_node->getEdge(to_node);
+            if (edge_1 == nullptr)
+            {
+                string edge_string = "E(" + this->vertex2str(from) + "," + this->vertex2str(to) + ")";
+                throw EdgeNotFoundException(edge_string);
+            }
+            typename AbstractGraph<T>::Edge *edge_2 = to_node->getEdge(from_node);
+            if (edge_2 == nullptr)
+            {
+                string edge_string = "E(" + this->vertex2str(to) + "," + this->vertex2str(from) + ")";
+                throw EdgeNotFoundException(edge_string);
+            }
+            from_node->removeTo(to_node);
+            to_node->removeTo(from_node);
         }
     }
     // (Finished)
     void remove(T vertex)
     {
-        VertexNode *node = this->getVertexNode(vertex);
+        typename AbstractGraph<T>::VertexNode *node = this->getVertexNode(vertex);
         if (node == nullptr)
         {
             throw VertexNotFoundException(this->vertex2str(vertex));
@@ -87,8 +105,12 @@ public:
         auto it = this->nodeList.begin();
         while (it != this->nodeList.end())
         {
-            VertexNode *current_node = *it;
+            typename AbstractGraph<T>::VertexNode *current_node = *it;
             current_node->removeTo(node);
+            if (!current_node->equals(node))
+            {
+                node->removeTo(current_node);
+            }
             it++;
         }
         this->nodeList.removeItem(node);
@@ -104,9 +126,6 @@ public:
         for (int i = 0; i < nedges; i++)
         {
             graph->connect(edges[i].from, edges[i].to, edges[i].weight);
-        }
-        for (int i = 0; i < nedges; i++)
-        {
             graph->connect(edges[i].to, edges[i].from, edges[i].weight);
         }
         return graph;
