@@ -126,7 +126,6 @@ public:
         for (int i = 0; i < nedges; i++)
         {
             graph->connect(edges[i].from, edges[i].to, edges[i].weight);
-            graph->connect(edges[i].to, edges[i].from, edges[i].weight);
         }
         return graph;
     }

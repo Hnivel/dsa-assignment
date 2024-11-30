@@ -16,6 +16,7 @@
 #include "graph/IGraph.h"
 #include <string>
 #include <sstream>
+#include <iomanip> // std::setw
 using namespace std;
 
 template <class T>
@@ -315,8 +316,7 @@ public:
         // (Finished)
         void connect(VertexNode *to, float weight = 0)
         {
-            Edge *edge = new Edge(this, to, weight);
-            this->adList.add(edge);
+            this->adList.add(new Edge(this, to, weight));
             to->inDegree_ += 1;
             this->outDegree_ += 1;
         }
@@ -336,14 +336,12 @@ public:
         // (Finished)
         Edge *getEdge(VertexNode *to)
         {
-            Edge *edge = new Edge(this, to);
             auto it = this->adList.begin();
             while (it != this->adList.end())
             {
-                Edge *current_edge = *it;
-                if (current_edge->equals(edge))
+                if ((*it)->from->equals(this) && (*it)->to->equals(to))
                 {
-                    return current_edge;
+                    return *it;
                 }
                 it++;
             }
