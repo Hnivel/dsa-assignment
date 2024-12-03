@@ -60,62 +60,91 @@ public:
         {
             sorted_list.sort();
         }
-        Queue<T> queue;
-        xMap<T, bool> visited(this->hash_code);
+
+        // Initialize in-degrees
+        xMap<T, int> in_degrees(this->hash_code);
         for (T vertex : sorted_list)
         {
-            visited.put(vertex, false);
+            in_degrees.put(vertex, 0);
         }
+
+        // Calculate in-degrees
         for (T vertex : sorted_list)
         {
-            if (visited[vertex] == false)
+            DLinkedList<T> neighbors = this->graph->getOutwardEdges(vertex);
+            for (T neighbor : neighbors)
+            {
+                in_degrees.put(neighbor, in_degrees.get(neighbor) + 1);
+            }
+        }
+
+        // Initialize queue with vertices of in-degree 0
+        Queue<T> queue;
+        for (T vertex : sorted_list)
+        {
+            if (in_degrees.get(vertex) == 0)
             {
                 queue.push(vertex);
-                visited.put(vertex, true);
-                while (queue.empty() == false)
+            }
+        }
+
+        DLinkedList<T> return_list;
+        while (queue.empty() == false)
+        {
+            T current = queue.pop();
+            return_list.add(current);
+
+            DLinkedList<T> neighbors = this->graph->getOutwardEdges(current);
+            for (T neighbor : neighbors)
+            {
+                in_degrees.put(neighbor, in_degrees.get(neighbor) - 1);
+                if (in_degrees.get(neighbor) == 0)
                 {
-                    T current = queue.pop();
-                    DLinkedList<T> neighbors = this->graph->getOutwardEdges(current);
-                    for (T neighbor : neighbors)
-                    {
-                        if (visited[neighbor] == false)
-                        {
-                            queue.push(neighbor);
-                            visited.put(neighbor, true);
-                        }
-                    }
-                    sorted_list.add(current);
+                    queue.push(neighbor);
                 }
             }
         }
-        return sorted_list;
+
+        // Check if there was a cycle
+        if (return_list.size() != sorted_list.size())
+        {
+            throw std::runtime_error("Graph has at least one cycle");
+        }
+
+        return return_list;
     }
     // (Finished)
     DLinkedList<T> dfsSort(bool sorted = true)
     {
         DLinkedListSE<T> sorted_list = this->graph->vertices();
+        // cout << sorted_list.toString() << endl;
         if (sorted == true)
         {
             sorted_list.sort();
         }
+        // cout << "Flag 2" << endl;
         Stack<T> stack;
         xMap<T, bool> visited(this->hash_code);
         for (T vertex : sorted_list)
         {
             visited.put(vertex, false);
         }
+        cout << "Flag 3" << endl;
         for (T vertex : sorted_list)
         {
-            if (visited[vertex] == false)
+            if (visited.get(vertex) == false)
             {
                 dfs(vertex, visited, stack);
             }
         }
+        cout << "Flag 4" << endl;
+        DLinkedList<T> return_list;
         while (stack.empty() == false)
         {
-            sorted_list.add(stack.pop());
+            return_list.add(stack.pop());
         }
-        return sorted_list;
+        cout << "Flag 4" << endl;
+        return return_list;
     }
 
 protected:
@@ -127,7 +156,7 @@ protected:
         DLinkedList<T> neighbors = this->graph->getOutwardEdges(vertex);
         for (T neighbor : neighbors)
         {
-            if (visited[neighbor] == false)
+            if (visited.get(neighbor) == false)
             {
                 dfs(neighbor, visited, stack);
             }

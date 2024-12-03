@@ -34,7 +34,7 @@ public:
             return;
         }
 
-        DLinkedList<T> left_list, right_list;
+        DLinkedListSE<T> left_list, right_list;
         typename DLinkedList<T>::Node *current = this->head->next; // Skip dummy head node
         int mid = this->count / 2;
 

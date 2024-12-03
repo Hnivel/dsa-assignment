@@ -71,7 +71,7 @@ public:
     // (Finished)
     bool remove(T item)
     {
-        return this->list.removeItem(item, this->deleteUserData);
+        return this->list.removeItem(item);
     }
     // (Finished)
     bool contains(T item)

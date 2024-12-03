@@ -14,11 +14,11 @@
 #ifndef DGRAPHMODEL_H
 #define DGRAPHMODEL_H
 #include "graph/AbstractGraph.h"
-// #include "stacknqueue/Queue.h"
-// #include "stacknqueue/Stack.h"
-// #include "hash/XHashMap.h"
+#include "stacknqueue/Queue.h"
+#include "stacknqueue/Stack.h"
+#include "hash/xMap.h"
 // #include "stacknqueue/PriorityQueue.h"
-// #include "sorting/DLinkedListSE.h"
+#include "sorting/DLinkedListSE.h"
 
 //////////////////////////////////////////////////////////////////////
 ///////////// GraphModel: Directed Graph Model    ////////////////////
