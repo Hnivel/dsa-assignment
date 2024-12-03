@@ -30,7 +30,7 @@ class DGraphModel : public AbstractGraph<T>
 private:
 public:
     DGraphModel(bool (*vertexEQ)(T &, T &), string (*vertex2str)(T &)) : AbstractGraph<T>(vertexEQ, vertex2str) {}
-    // (Finished)
+    // Connect two vertices with a weight (Finished)
     void connect(T from, T to, float weight = 0)
     {
         typename AbstractGraph<T>::VertexNode *from_node = this->getVertexNode(from);
@@ -45,7 +45,7 @@ public:
         }
         from_node->connect(to_node, weight);
     }
-    // (Finished)
+    // Disconnect two vertices (Finished)
     void disconnect(T from, T to)
     {
         typename AbstractGraph<T>::VertexNode *from_node = this->getVertexNode(from);
@@ -65,7 +65,7 @@ public:
         }
         from_node->removeTo(to_node);
     }
-    // (Finished)
+    // Remove a vertex from the graph (Finished)
     void remove(T vertex)
     {
         typename AbstractGraph<T>::VertexNode *node = this->getVertexNode(vertex);
@@ -83,7 +83,7 @@ public:
         }
         this->nodeList.removeItem(node);
     }
-    // (Finished)
+    // Create a graph from an array of vertices and an array of edges (Finished)
     static DGraphModel<T> *create(T *vertices, int nvertices, Edge<T> *edges, int nedges, bool (*vertexEQ)(T &, T &), string (*vertex2str)(T &))
     {
         DGraphModel<T> *graph = new DGraphModel<T>(vertexEQ, vertex2str);

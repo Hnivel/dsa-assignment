@@ -56,20 +56,19 @@ public:
     DLinkedList<T> bfsSort(bool sorted = true)
     {
         DLinkedListSE<T> sorted_list = this->graph->vertices();
-        sorted_list.println();
+        // sorted_list.println();
         if (sorted == true)
         {
             sorted_list.sort();
         }
-        sorted_list.println();
-        // Initialize in-degrees
+        // sorted_list.println();
+        // Initialize in_degrees with zeros
         xMap<T, int> in_degrees(this->hash_code);
         for (T vertex : sorted_list)
         {
             in_degrees.put(vertex, 0);
         }
-
-        // Calculate in-degrees
+        // Calculate in_degrees
         for (T vertex : sorted_list)
         {
             DLinkedList<T> neighbors = this->graph->getOutwardEdges(vertex);
@@ -78,8 +77,7 @@ public:
                 in_degrees.put(neighbor, in_degrees.get(neighbor) + 1);
             }
         }
-
-        // Initialize queue with vertices of in-degree 0
+        // Initialize queue with vertices that their in_degrees are zeros
         Queue<T> queue;
         for (T vertex : sorted_list)
         {
@@ -88,13 +86,12 @@ public:
                 queue.push(vertex);
             }
         }
-
+        // Perform BFS
         DLinkedList<T> return_list;
         while (queue.empty() == false)
         {
             T current = queue.pop();
             return_list.add(current);
-
             DLinkedList<T> neighbors = this->graph->getOutwardEdges(current);
             for (T neighbor : neighbors)
             {
@@ -105,32 +102,31 @@ public:
                 }
             }
         }
-
         // Check if there was a cycle
         if (return_list.size() != sorted_list.size())
         {
-            throw std::runtime_error("Graph has at least one cycle");
+            throw std::runtime_error("This graph is not a Directed Acyclic Graph");
         }
-
         return return_list;
     }
     // (Finished)
     DLinkedList<T> dfsSort(bool sorted = true)
     {
         DLinkedListSE<T> sorted_list = this->graph->vertices();
-        sorted_list.println();
+        // sorted_list.println();
         if (sorted == true)
         {
             sorted_list.sort();
         }
-        sorted_list.println();
+        // sorted_list.println();
         Stack<T> stack;
+        // Initialize visited with false
         xMap<T, bool> visited(this->hash_code);
         for (T vertex : sorted_list)
         {
             visited.put(vertex, false);
         }
-        // cout << "Flag 3" << endl;
+        // Perform DFS
         for (T vertex : sorted_list)
         {
             if (visited.get(vertex) == false)
@@ -138,13 +134,12 @@ public:
                 dfs(vertex, visited, stack);
             }
         }
-        // cout << "Flag 4" << endl;
         DLinkedList<T> return_list;
+        // Construct the return list
         while (stack.empty() == false)
         {
             return_list.add(stack.pop());
         }
-        // cout << "Flag 4" << endl;
         return return_list;
     }
 
@@ -164,53 +159,56 @@ protected:
         }
         stack.push(vertex);
     }
-    // (Unfinished)
+    // (Finished)
     xMap<T, int> vertex2inDegree(int (*hash)(T &, int))
     {
         xMap<T, int> in_degrees(hash);
         DLinkedList<T> vertices = this->graph->vertices();
+        // Initialize in_degrees with zeros
         for (T vertex : vertices)
         {
             in_degrees.put(vertex, 0);
         }
-        for (T vertex : vertices)
-        {
-            DLinkedList<T> neighbors = this->graph->getInwardEdges(vertex);
-            for (T neighbor : neighbors)
-            {
-                in_degrees.put(neighbor, in_degrees[neighbor] + 1);
-            }
-        }
-        return in_degrees;
-    }
-    // (Unfinished)
-    xMap<T, int> vertex2outDegree(int (*hash)(T &, int))
-    {
-        xMap<T, int> out_degrees(hash);
-        DLinkedList<T> vertices = this->graph->vertices();
-        for (T vertex : vertices)
-        {
-            out_degrees.put(vertex, 0);
-        }
+        // Calculate in_degrees
         for (T vertex : vertices)
         {
             DLinkedList<T> neighbors = this->graph->getOutwardEdges(vertex);
             for (T neighbor : neighbors)
             {
-                out_degrees.put(neighbor, out_degrees[neighbor] + 1);
+                in_degrees.put(neighbor, in_degrees.get(neighbor) + 1);
+            }
+        }
+        return in_degrees;
+    }
+    // (Finished)
+    xMap<T, int> vertex2outDegree(int (*hash)(T &, int))
+    {
+        xMap<T, int> out_degrees(hash);
+        DLinkedList<T> vertices = this->graph->vertices();
+        // Initialize out_degrees with zeros
+        for (T vertex : vertices)
+        {
+            out_degrees.put(vertex, 0);
+        }
+        // Calculate out_degrees
+        for (T vertex : vertices)
+        {
+            DLinkedList<T> neighbors = this->graph->getOutwardEdges(vertex);
+            for (T neighbor : neighbors)
+            {
+                out_degrees.put(vertex, out_degrees.get(vertex) + 1);
             }
         }
         return out_degrees;
     }
-    // (Unfinished)
+    // (Finished)
     DLinkedList<T> listOfZeroInDegrees()
     {
         DLinkedList<T> zero_in_degrees;
         DLinkedList<T> vertices = this->graph->vertices();
-        xMap<T, int> in_degrees = vertex2inDegree(this->hash_code);
         for (T vertex : vertices)
         {
-            if (in_degrees[vertex] == 0)
+            if (this->graph->inDegree(vertex) == 0)
             {
                 zero_in_degrees.add(vertex);
             }

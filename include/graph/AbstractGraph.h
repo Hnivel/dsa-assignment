@@ -92,19 +92,19 @@ public:
 
     /* The following are common methods for UGraphModel and DGraphModel
      */
-    // (Finished)
+    // Add a vertex to the graph (Finished)
     virtual void add(T vertex)
     {
         VertexNode *node = new VertexNode(vertex, vertexEQ, vertex2str);
         nodeList.add(node);
     }
-    // (Finished)
+    // Check if the graph contains the given vertex (Finished)
     virtual bool contains(T vertex)
     {
         VertexNode *node = getVertexNode(vertex);
         return (node != nullptr);
     }
-    // (Finished)
+    // Return the weight of the edge of the given vertices (Finished)
     virtual float weight(T from, T to)
     {
         VertexNode *from_node = getVertexNode(from);
@@ -126,7 +126,7 @@ public:
         }
         return edge->weight;
     }
-    // (Finished)
+    // Return the list of vertices that this vertex has outward edges to (Finished)
     virtual DLinkedList<T> getOutwardEdges(T from)
     {
         VertexNode *from_node = getVertexNode(from);
@@ -136,7 +136,7 @@ public:
         }
         return from_node->getOutwardEdges();
     }
-    // (Finished)
+    // Return the list of vertices that have outward edges to this vertex (Finished)
     virtual DLinkedList<T> getInwardEdges(T to)
     {
         VertexNode *to_node = getVertexNode(to);
@@ -158,21 +158,22 @@ public:
         }
         return return_list;
     }
-    // (Finished)
+    // Return the number of vertices in the graph (Finished)
     virtual int size()
     {
         return nodeList.size();
     }
-    // (Finished)
+    // Return true if the graph is empty (Finished)
     virtual bool empty()
     {
         return nodeList.empty();
-    };
-    // (Finished)
+    }
+    // Remove all vertices from the graph (Finished)
     virtual void clear()
     {
         nodeList.clear();
     }
+    // Return the number of outward edges from the given vertex (Finished)
     virtual int inDegree(T vertex)
     {
         VertexNode *node = getVertexNode(vertex);
@@ -182,6 +183,7 @@ public:
         }
         return node->inDegree();
     }
+    // Return the number of inward edges to the given vertex (Finished)
     virtual int outDegree(T vertex)
     {
         VertexNode *node = getVertexNode(vertex);
@@ -191,7 +193,7 @@ public:
         }
         return node->outDegree();
     }
-    // (Finished)
+    // Return the list of vertices in the graph (Finished)
     virtual DLinkedList<T> vertices()
     {
         DLinkedList<T> return_list;
@@ -204,7 +206,7 @@ public:
         }
         return return_list;
     }
-    // (Finished)
+    // Check if the given vertices are connected (Finished)
     virtual bool connected(T from, T to)
     {
         VertexNode *from_node = getVertexNode(from);
@@ -220,10 +222,12 @@ public:
         Edge *edge = from_node->getEdge(to_node);
         return (edge != nullptr);
     }
+    // Print the string representation of the graph (Finished)
     void println()
     {
         cout << this->toString() << endl;
     }
+    // Return the string representation of the graph (Finished)
     virtual string toString()
     {
         string mark(50, '=');
@@ -308,19 +312,19 @@ public:
             this->vertex2str = vertex2str;
             this->outDegree_ = this->inDegree_ = 0;
         }
-        // (Finished) (S) //
+        // Return the vertex (Finished)
         T &getVertex()
         {
             return vertex;
         }
-        // (Finished)
+        // Connect this vertex to the given vertex (Finished)
         void connect(VertexNode *to, float weight = 0)
         {
             this->adList.add(new Edge(this, to, weight));
             to->inDegree_ += 1;
             this->outDegree_ += 1;
         }
-        // (Finished)
+        // Return the list of vertices that this vertex has outward edges to (Finished)
         DLinkedList<T> getOutwardEdges()
         {
             DLinkedList<T> return_list;
@@ -333,7 +337,7 @@ public:
             }
             return return_list;
         }
-        // (Finished)
+        // Return the edge from this vertex to the given vertex (Finished)
         Edge *getEdge(VertexNode *to)
         {
             auto it = this->adList.begin();
@@ -347,12 +351,12 @@ public:
             }
             return nullptr;
         }
-        // (Finished) //
+        // Check if this vertex is equal to the given vertex (Finished)
         bool equals(VertexNode *node)
         {
             return this->vertexEQ(this->vertex, node->vertex);
         }
-        // (Finished) //
+        // Remove the edge from this vertex to the given vertex (Finished)
         void removeTo(VertexNode *to)
         {
             Edge *edge = this->getEdge(to);
@@ -367,16 +371,17 @@ public:
                 this->outDegree_ -= 1;
             }
         }
-        // (Finished) //
+        // Return the number of inward edges (Finished)
         int inDegree()
         {
             return this->inDegree_;
         }
-        // (Finished) //
+        // Return the number of outward edges (Finished)
         int outDegree()
         {
             return this->outDegree_;
         }
+        // Return the string representation of this vertex (Finished)
         string toString()
         {
             stringstream os;
@@ -404,17 +409,17 @@ public:
             this->to = to;
             this->weight = weight;
         }
-        // (Finished)
+        // Check if this edge is equal to the given edge (Finished)
         bool equals(Edge *edge)
         {
             return (this->from == edge->from && this->to == edge->to);
         }
-        // (Finished) (S) //
+        // Check if the given edges are equal (Finished)
         static bool edgeEQ(Edge *&edge1, Edge *&edge2)
         {
             return edge1->equals(edge2);
         }
-        // (Finished) (S) //
+        // Return the string representation of this edge (Finished)
         string toString()
         {
             stringstream os;

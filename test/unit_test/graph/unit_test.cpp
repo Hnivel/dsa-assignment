@@ -993,13 +993,14 @@ int intKeyHash(T &key, int capacity)
 bool UNIT_TEST_Graph::graph16()
 {
   DGraphModel<char> model(&charComparator, &vertex2str);
-  char vertices[] = {'A', 'B', 'C', 'D'};
-  for (int idx = 0; idx < 4; idx++)
+  char vertices[] = {'A', 'B', 'C', 'D', 'E'};
+  for (int idx = 0; idx < 5; idx++)
   {
     model.add(vertices[idx]);
   }
   model.connect('A', 'B');
   model.connect('B', 'D');
+  model.connect('E', 'C');
   model.connect('C', 'B');
   model.connect('C', 'D');
   model.println();
@@ -1014,13 +1015,14 @@ bool UNIT_TEST_Graph::graph16()
 bool UNIT_TEST_Graph::graph17()
 {
   DGraphModel<char> model(&charComparator, &vertex2str);
-  char vertices[] = {'D', 'C', 'B', 'A'};
-  for (int idx = 0; idx < 4; idx++)
+  char vertices[] = {'D', 'C', 'B', 'A', 'E'};
+  for (int idx = 0; idx < 5; idx++)
   {
     model.add(vertices[idx]);
   }
   model.connect('A', 'B');
   model.connect('B', 'D');
+  model.connect('E', 'C');
   model.connect('C', 'B');
   model.connect('C', 'D');
   model.println();
