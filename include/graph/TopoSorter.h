@@ -56,11 +56,12 @@ public:
     DLinkedList<T> bfsSort(bool sorted = true)
     {
         DLinkedListSE<T> sorted_list = this->graph->vertices();
+        sorted_list.println();
         if (sorted == true)
         {
             sorted_list.sort();
         }
-
+        sorted_list.println();
         // Initialize in-degrees
         xMap<T, int> in_degrees(this->hash_code);
         for (T vertex : sorted_list)
@@ -117,19 +118,19 @@ public:
     DLinkedList<T> dfsSort(bool sorted = true)
     {
         DLinkedListSE<T> sorted_list = this->graph->vertices();
-        // cout << sorted_list.toString() << endl;
+        sorted_list.println();
         if (sorted == true)
         {
             sorted_list.sort();
         }
-        // cout << "Flag 2" << endl;
+        sorted_list.println();
         Stack<T> stack;
         xMap<T, bool> visited(this->hash_code);
         for (T vertex : sorted_list)
         {
             visited.put(vertex, false);
         }
-        cout << "Flag 3" << endl;
+        // cout << "Flag 3" << endl;
         for (T vertex : sorted_list)
         {
             if (visited.get(vertex) == false)
@@ -137,13 +138,13 @@ public:
                 dfs(vertex, visited, stack);
             }
         }
-        cout << "Flag 4" << endl;
+        // cout << "Flag 4" << endl;
         DLinkedList<T> return_list;
         while (stack.empty() == false)
         {
             return_list.add(stack.pop());
         }
-        cout << "Flag 4" << endl;
+        // cout << "Flag 4" << endl;
         return return_list;
     }
 

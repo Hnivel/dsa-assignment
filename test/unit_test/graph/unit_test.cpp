@@ -1005,16 +1005,16 @@ bool UNIT_TEST_Graph::graph16()
   model.println();
 
   TopoSorter<char> sorter(&model, intKeyHash);
-  cout << "Flag 1" << endl;
-  DLinkedList<char> topo = sorter.sort(0, false);
-  cout << "Flag 2" << endl;
+  // cout << "Flag 1" << endl;
+  DLinkedList<char> topo = sorter.sort(0, true);
+  // cout << "Flag 2" << endl;
   cout << left << setw(15) << "Topo-order: " << topo.toString() << endl;
   return true;
 }
 bool UNIT_TEST_Graph::graph17()
 {
   DGraphModel<char> model(&charComparator, &vertex2str);
-  char vertices[] = {'A', 'B', 'C', 'D'};
+  char vertices[] = {'D', 'C', 'B', 'A'};
   for (int idx = 0; idx < 4; idx++)
   {
     model.add(vertices[idx]);
@@ -1026,9 +1026,9 @@ bool UNIT_TEST_Graph::graph17()
   model.println();
 
   TopoSorter<char> sorter(&model, intKeyHash);
-  cout << "Flag 1" << endl;
-  DLinkedList<char> topo = sorter.sort(1, false);
-  cout << "Flag 2" << endl;
+  // cout << "Flag 1" << endl;
+  DLinkedList<char> topo = sorter.sort(1, true);
+  // cout << "Flag 2" << endl;
   cout << left << setw(15) << "Topo-order: " << topo.toString() << endl;
   return true;
 }
