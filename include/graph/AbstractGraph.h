@@ -412,7 +412,7 @@ public:
         // Check if this edge is equal to the given edge (Finished)
         bool equals(Edge *edge)
         {
-            return (this->from == edge->from && this->to == edge->to);
+            return (this->from->equals(edge->from) && this->to->equals(edge->to));
         }
         // Check if the given edges are equal (Finished)
         static bool edgeEQ(Edge *&edge1, Edge *&edge2)

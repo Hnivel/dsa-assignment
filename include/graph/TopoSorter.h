@@ -102,6 +102,7 @@ public:
                 }
             }
         }
+        cout << "Flag 2" << endl;
         // Check if there was a cycle
         if (return_list.size() != sorted_list.size())
         {

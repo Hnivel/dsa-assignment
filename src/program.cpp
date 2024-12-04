@@ -36,8 +36,8 @@ int main(int argc, char **argv)
     DGraphDemo2();
     DGraphDemo3();
     DGraphDemo4();
-    // ugraphDemo1();
-    // ugraphDemo2();
+    ugraphDemo1();
+    ugraphDemo2();
 
     // ugraphDemo3();
     return 0;
