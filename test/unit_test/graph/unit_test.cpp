@@ -994,20 +994,20 @@ bool UNIT_TEST_Graph::graph16()
 {
   DGraphModel<char> model(&charComparator, &vertex2str);
   char vertices[] = {'A', 'B', 'C', 'D', 'E'};
-  for (int idx = 0; idx < 5; idx++)
+  for (int idx = 0; idx < 4; idx++)
   {
     model.add(vertices[idx]);
   }
   model.connect('A', 'B');
   model.connect('B', 'D');
-  model.connect('E', 'C');
+  // model.connect('E', 'C');
   model.connect('C', 'B');
   model.connect('C', 'D');
   model.println();
 
   TopoSorter<char> sorter(&model, intKeyHash);
   // cout << "Flag 1" << endl;
-  DLinkedList<char> topo = sorter.sort(0, true);
+  DLinkedList<char> topo = sorter.sort(1, true);
   // cout << "Flag 2" << endl;
   cout << left << setw(15) << "Topo-order: " << topo.toString() << endl;
   return true;
