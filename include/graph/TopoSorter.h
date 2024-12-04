@@ -56,12 +56,10 @@ public:
     DLinkedList<T> bfsSort(bool sorted = true)
     {
         DLinkedListSE<T> sorted_list = this->graph->vertices();
-        // sorted_list.println();
         if (sorted == true)
         {
             sorted_list.sort();
         }
-        // sorted_list.println();
         // Initialize in_degrees with zeros
         xMap<T, int> in_degrees(this->hash_code);
         for (T vertex : sorted_list)
@@ -102,7 +100,6 @@ public:
                 }
             }
         }
-        cout << "Flag 2" << endl;
         // Check if there was a cycle
         if (return_list.size() != sorted_list.size())
         {
@@ -114,12 +111,10 @@ public:
     DLinkedList<T> dfsSort(bool sorted = true)
     {
         DLinkedListSE<T> sorted_list = this->graph->vertices();
-        // sorted_list.println();
         if (sorted == true)
         {
             sorted_list.sort();
         }
-        // sorted_list.println();
         Stack<T> stack;
         // Initialize visited with false
         xMap<T, bool> visited(this->hash_code);

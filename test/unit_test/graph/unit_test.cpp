@@ -1015,22 +1015,32 @@ bool UNIT_TEST_Graph::graph16()
 bool UNIT_TEST_Graph::graph17()
 {
   DGraphModel<char> model(&charComparator, &vertex2str);
-  char vertices[] = {'D', 'C', 'B', 'A', 'E'};
-  for (int idx = 0; idx < 5; idx++)
+  for (int idx = 0; idx < 10; idx++)
   {
-    model.add(vertices[idx]);
+    model.add((char)('0' + idx));
   }
-  model.connect('A', 'B');
-  model.connect('B', 'D');
-  model.connect('E', 'C');
-  model.connect('C', 'B');
-  model.connect('C', 'D');
+
+  model.connect('0', '1');
+  model.connect('0', '5');
+  model.connect('1', '7');
+  model.connect('3', '2');
+  model.connect('3', '4');
+  model.connect('3', '7');
+  model.connect('3', '8');
+  model.connect('4', '8');
+  model.connect('6', '0');
+  model.connect('6', '1');
+  model.connect('6', '2');
+  model.connect('8', '2');
+  model.connect('8', '7');
+  model.connect('9', '4');
   model.println();
 
   TopoSorter<char> sorter(&model, intKeyHash);
-  // cout << "Flag 1" << endl;
-  DLinkedList<char> topo = sorter.sort(1, true);
-  // cout << "Flag 2" << endl;
-  cout << left << setw(15) << "Topo-order: " << topo.toString() << endl;
+  DLinkedList<char> bfs = sorter.sort(TopoSorter<char>::BFS);
+  cout << left << setw(15) << "Topo-order (BFS): " << bfs.toString() << endl;
+
+  DLinkedList<char> dfs = sorter.sort(TopoSorter<char>::DFS);
+  cout << left << setw(15) << "Topo-order (DFS): " << dfs.toString() << endl;
   return true;
 }
