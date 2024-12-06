@@ -1004,7 +1004,6 @@ bool UNIT_TEST_Graph::graph16()
   model.connect('C', 'B');
   model.connect('C', 'D');
   model.println();
-
   TopoSorter<char> sorter(&model, intKeyHash);
   // cout << "Flag 1" << endl;
   DLinkedList<char> topo = sorter.sort(1, true);

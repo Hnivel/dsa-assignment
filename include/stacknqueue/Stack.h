@@ -36,7 +36,7 @@ public:
     {
         this->itemEqual = itemEqual;
         this->deleteUserData = deleteUserData;
-        this->list = DLinkedList<T>(deleteUserData, itemEqual); // ?
+        this->list = DLinkedList<T>(deleteUserData, itemEqual);
     }
     // (Finished)
     void push(T item)

@@ -29,12 +29,12 @@ protected:
     bool (*itemEqual)(T &lhs, T &rhs);
 
 public:
-    // (Unfinished)
+    // (Finished)
     Queue(void (*deleteUserData)(DLinkedList<T> *) = 0, bool (*itemEqual)(T &, T &) = 0)
     {
         this->itemEqual = itemEqual;
         this->deleteUserData = deleteUserData;
-        this->list = DLinkedList<T>(deleteUserData, itemEqual); // ?
+        this->list = DLinkedList<T>(deleteUserData, itemEqual);
     }
     // (Finished)
     void push(T item)
