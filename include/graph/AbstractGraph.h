@@ -320,6 +320,12 @@ public:
         // Connect this vertex to the given vertex (Finished)
         void connect(VertexNode *to, float weight = 0)
         {
+            Edge *current_edge = this->getEdge(to);
+            if (current_edge != nullptr)
+            {
+                current_edge->weight = weight;
+                return;
+            }
             this->adList.add(new Edge(this, to, weight));
             to->inDegree_ += 1;
             this->outDegree_ += 1;
