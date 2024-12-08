@@ -1,6 +1,12 @@
 #include "unit_test.hpp"
 map<string, bool (UNIT_TEST_Graph::*)()> UNIT_TEST_Graph::TESTS;
 
+template <class T>
+int intKeyHash(T &key, int capacity)
+{
+  return key % capacity;
+}
+
 bool charComparator(char &lhs, char &rhs)
 {
   return lhs == rhs;
@@ -985,61 +991,331 @@ Edges:      \n\
 
   return printResult(output.str(), expect, name);
 }
-template <class T>
-int intKeyHash(T &key, int capacity)
-{
-  return key % capacity;
-}
+
 bool UNIT_TEST_Graph::graph16()
 {
+  stringstream output;
   DGraphModel<char> model(&charComparator, &vertex2str);
-  char vertices[] = {'A', 'B', 'C', 'D', 'E'};
-  for (int idx = 0; idx < 4; idx++)
+  char vertices[] = {'1', '2', '3', '4', '5', '6', '7', '8'};
+  for (int idx = 0; idx < 8; idx++)
   {
     model.add(vertices[idx]);
   }
-  model.connect('A', 'B');
-  model.connect('B', 'D');
-  // model.connect('E', 'C');
-  model.connect('C', 'B');
-  model.connect('C', 'D');
-  model.println();
-  TopoSorter<char> sorter(&model, intKeyHash);
-  // cout << "Flag 1" << endl;
-  DLinkedList<char> topo = sorter.sort(1, true);
-  // cout << "Flag 2" << endl;
-  cout << left << setw(15) << "Topo-order: " << topo.toString() << endl;
+  model.connect('1', '6');
+  model.connect('1', '5');
+  model.connect('1', '3');
+  model.connect('4', '3');
+  model.connect('3', '5');
+  model.connect('5', '6');
+  model.connect('5', '2');
+  model.connect('8', '7');
+  model.connect('6', '2');
+  TopoSorter<char> topoSorter(&model, &intKeyHash);
+  DLinkedList<char> result = topoSorter.sort(TopoSorter<char>::DFS);
+
+  //! expect ----------------------------------
+  string expect = "DFS Topological Sort: 8->7->4->1->3->5->6->2->NULL";
+
+  //! output ----------------------------------
+  output << "DFS Topological Sort: ";
+  for (auto it = result.begin(); it != result.end(); it++)
+  {
+    output << *it << "->";
+  }
+  output << "NULL";
+  if (output.str() == expect)
+    cout << "DFS_PASS" << endl;
+  else
+  {
+    cout << "DFS_FAIL" << endl;
+    cout << "Expect: " << expect << endl;
+    cout << "Output: " << output.str() << endl;
+  }
+  cout << "=====================" << endl;
+  //! remove data -----------------------------
+  model.clear();
   return true;
 }
 bool UNIT_TEST_Graph::graph17()
 {
+  stringstream output;
   DGraphModel<char> model(&charComparator, &vertex2str);
-  for (int idx = 0; idx < 10; idx++)
+  char vertices[] = {'1', '2', '3', '4', '5', '6', '7', '8'};
+  for (int idx = 0; idx < 8; idx++)
   {
-    model.add((char)('0' + idx));
+    model.add(vertices[idx]);
+  }
+  model.connect('1', '6');
+  model.connect('1', '5');
+  model.connect('1', '3');
+  model.connect('4', '3');
+  model.connect('3', '5');
+  model.connect('5', '6');
+  model.connect('5', '2');
+  model.connect('8', '7');
+  model.connect('6', '2');
+  TopoSorter<char> topoSorter(&model, &intKeyHash);
+  DLinkedList<char> result = topoSorter.sort(TopoSorter<char>::BFS);
+
+  //! expect ----------------------------------
+  string expect = "BFS Topological Sort: 1->4->8->3->7->5->6->2->NULL";
+
+  //! output ----------------------------------
+  output << "BFS Topological Sort: ";
+  for (auto it = result.begin(); it != result.end(); it++)
+  {
+    output << *it << "->";
+  }
+  output << "NULL";
+  if (output.str() == expect)
+    cout << "BFS_PASS" << endl;
+  else
+  {
+    cout << "BFS_FAIL" << endl;
+    cout << "Expect: " << expect << endl;
+    cout << "Output: " << output.str() << endl;
+  }
+  cout << "=====================" << endl;
+  //! remove data -----------------------------
+  model.clear();
+  return true;
+}
+
+bool UNIT_TEST_Graph::graph18()
+{
+  cout << "Sort test" << endl;
+  DLinkedListSE<int> testsort;
+  testsort.add(11);
+  testsort.add(2);
+  testsort.add(1);
+  testsort.add(12);
+  testsort.add(5);
+  testsort.add(4);
+  testsort.add(10);
+  testsort.add(3);
+  testsort.add(8);
+  testsort.add(6);
+  testsort.add(9);
+  testsort.add(7);
+  cout << "Before sort: " << testsort.toString() << endl;
+  testsort.sort();
+  cout << "After sort: " << testsort.toString() << endl;
+  return true;
+}
+
+bool UNIT_TEST_Graph::graph19()
+{
+  stringstream output;
+  DGraphModel<char> model(&charComparator, &vertex2str);
+  char vertices[] = {'0', '1', '2', '3', '4', '5', '6', '7', '8'};
+  for (int idx = 0; idx < 9; idx++)
+  {
+    model.add(vertices[idx]);
   }
 
   model.connect('0', '1');
-  model.connect('0', '5');
-  model.connect('1', '7');
-  model.connect('3', '2');
+  model.connect('0', '2');
+  model.connect('1', '3');
+  model.connect('2', '3');
   model.connect('3', '4');
+  model.connect('3', '5');
+  model.connect('4', '5');
+  model.connect('4', '6');
+  model.connect('5', '6');
+  model.connect('6', '7');
+  model.connect('6', '8');
+  TopoSorter<char> topoSorter(&model, &intKeyHash);
+  DLinkedList<char> result = topoSorter.sort(TopoSorter<char>::DFS);
+
+  //! expect ----------------------------------
+  string expect = "DFS Topological Sort: 0->2->1->3->4->5->6->8->7->NULL";
+
+  //! output ----------------------------------
+  output << "DFS Topological Sort: ";
+  for (auto it = result.begin(); it != result.end(); it++)
+  {
+    output << *it << "->";
+  }
+  output << "NULL";
+  if (output.str() == expect)
+    cout << "DFS_PASS" << endl;
+  else
+  {
+    cout << "DFS_FAIL" << endl;
+    cout << "Expect: " << expect << endl;
+    cout << "Output: " << output.str() << endl;
+  }
+  cout << "=====================" << endl;
+  //! remove data -----------------------------
+  model.clear();
+  return true;
+}
+
+bool UNIT_TEST_Graph::graph20()
+{
+  // create test topoSorter similar to graph16 with different edges and vertices
+  stringstream output;
+  DGraphModel<char> model(&charComparator, &vertex2str);
+  char vertices[] = {'1', '2', '3', '4', '5', '6'};
+  for (int idx = 0; idx < 6; idx++)
+  {
+    model.add(vertices[idx]);
+  }
+  model.connect('1', '3');
+  model.connect('1', '5');
+  model.connect('1', '6');
+  model.connect('2', '5');
+  model.connect('2', '6');
+  model.connect('3', '4');
+  model.connect('3', '5');
+  model.connect('5', '6');
+  TopoSorter<char> topoSorter(&model, &intKeyHash);
+  DLinkedList<char> result = topoSorter.sort(TopoSorter<char>::DFS);
+  string expect = "DFS Topological Sort: 2->1->3->5->6->4->NULL";
+  output << "DFS Topological Sort: ";
+  for (auto it = result.begin(); it != result.end(); it++)
+  {
+    output << *it << "->";
+  }
+  output << "NULL";
+  if (output.str() == expect)
+    cout << "DFS_PASS" << endl;
+  else
+  {
+    cout << "DFS_FAIL" << endl;
+    cout << "Expect: " << expect << endl;
+    cout << "Output: " << output.str() << endl;
+  }
+  cout << "=====================" << endl;
+  //! remove data -----------------------------
+  model.clear();
+  return true;
+}
+
+bool UNIT_TEST_Graph::graph21()
+{
+  // create test topoSorter similar to graph16 with different edges and vertices
+  stringstream output;
+  DGraphModel<char> model(&charComparator, &vertex2str);
+  char vertices[] = {'1', '2', '3', '4', '5', '6', '7', '8'};
+  for (int idx = 0; idx < 8; idx++)
+  {
+    model.add(vertices[idx]);
+  }
+  model.connect('1', '2');
+  model.connect('1', '3');
+  model.connect('1', '4');
+  model.connect('2', '5');
+  model.connect('2', '6');
   model.connect('3', '7');
   model.connect('3', '8');
-  model.connect('4', '8');
-  model.connect('6', '0');
-  model.connect('6', '1');
-  model.connect('6', '2');
-  model.connect('8', '2');
-  model.connect('8', '7');
-  model.connect('9', '4');
-  model.println();
+  model.connect('4', '5');
+  model.connect('4', '6');
+  model.connect('5', '7');
+  model.connect('5', '8');
+  model.connect('6', '7');
+  model.connect('6', '8');
+  model.connect('7', '8');
+  TopoSorter<char> topoSorter(&model, &intKeyHash);
+  DLinkedList<char> result = topoSorter.sort(TopoSorter<char>::BFS);
+  string expect = "BFS Topological Sort: 1->2->3->4->5->6->7->8->NULL";
+  output << "BFS Topological Sort: ";
+  for (auto it = result.begin(); it != result.end(); it++)
+  {
+    output << *it << "->";
+  }
+  output << "NULL";
+  if (output.str() == expect)
+    cout << "BFS_PASS" << endl;
+  else
+  {
+    cout << "BFS_FAIL" << endl;
+    cout << "Expect: " << expect << endl;
+    cout << "Output: " << output.str() << endl;
+  }
+  cout << "=====================" << endl;
+  //! remove data -----------------------------
+  model.clear();
+  return true;
+}
 
-  TopoSorter<char> sorter(&model, intKeyHash);
-  DLinkedList<char> bfs = sorter.sort(TopoSorter<char>::BFS);
-  cout << left << setw(15) << "Topo-order (BFS): " << bfs.toString() << endl;
+bool UNIT_TEST_Graph::graph22()
+{
+  // create test topoSorter similar to graph16 with different edges and vertices
+  stringstream output;
+  DGraphModel<char> model(&charComparator, &vertex2str);
+  char vertices[] = {'1', '2', '3', '4', '5', '6'};
+  for (int idx = 0; idx < 6; idx++)
+  {
+    model.add(vertices[idx]);
+  }
+  model.connect('1', '3');
+  model.connect('1', '5');
+  model.connect('1', '6');
+  model.connect('2', '5');
+  model.connect('2', '6');
+  model.connect('3', '4');
+  model.connect('3', '5');
+  model.connect('5', '6');
+  TopoSorter<char> topoSorter(&model, &intKeyHash);
+  DLinkedList<char> result = topoSorter.sort(TopoSorter<char>::BFS);
+  string expect = "BFS Topological Sort: 1->2->3->4->5->6->NULL";
+  output << "BFS Topological Sort: ";
+  for (auto it = result.begin(); it != result.end(); it++)
+  {
+    output << *it << "->";
+  }
+  output << "NULL";
+  if (output.str() == expect)
+    cout << "BFS_PASS" << endl;
+  else
+  {
+    cout << "BFS_FAIL" << endl;
+    cout << "Expect: " << expect << endl;
+    cout << "Output: " << output.str() << endl;
+  }
+  cout << "=====================" << endl;
+  //! remove data -----------------------------
+  model.clear();
+  return true;
+}
 
-  DLinkedList<char> dfs = sorter.sort(TopoSorter<char>::DFS);
-  cout << left << setw(15) << "Topo-order (DFS): " << dfs.toString() << endl;
+bool UNIT_TEST_Graph::graph23()
+{
+  // create test topoSorter similar to graph16 with different edges and vertices
+  stringstream output;
+  DGraphModel<char> model(&charComparator, &vertex2str);
+  char vertices[] = {'1', '2', '3', '4', '5', '6', '7'};
+  for (int idx = 0; idx < 7; idx++)
+  {
+    model.add(vertices[idx]);
+  }
+  // connect graph with 7 vertices
+  model.connect('1', '2');
+  model.connect('1', '3');
+  model.connect('2', '4');
+  model.connect('2', '5');
+  model.connect('3', '6');
+  model.connect('3', '7');
+  TopoSorter<char> topoSorter(&model, &intKeyHash);
+  DLinkedList<char> result = topoSorter.sort(TopoSorter<char>::DFS);
+  string expect = "DFS Topological Sort: 1->3->7->6->2->5->4->NULL";
+  output << "DFS Topological Sort: ";
+  for (auto it = result.begin(); it != result.end(); it++)
+  {
+    output << *it << "->";
+  }
+  output << "NULL";
+  if (output.str() == expect)
+    cout << "DFS_PASS" << endl;
+  else
+  {
+    cout << "DFS_FAIL" << endl;
+    cout << "Expect: " << expect << endl;
+    cout << "Output: " << output.str() << endl;
+  }
+  cout << "=====================" << endl;
+  //! remove data -----------------------------
+  model.clear();
   return true;
 }

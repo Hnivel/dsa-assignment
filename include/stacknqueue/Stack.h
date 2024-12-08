@@ -65,6 +65,7 @@ public:
     {
         return this->list.size();
     }
+    // (Finished)
     void clear()
     {
         this->list.clear();
@@ -74,6 +75,7 @@ public:
     {
         return this->list.removeItem(item);
     }
+    // (Finished)
     bool contains(T item)
     {
         return this->list.contains(item);

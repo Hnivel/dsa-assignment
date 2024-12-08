@@ -51,7 +51,6 @@ public:
         typename DLinkedList<T>::Node *left_node = left_list.head->next;   // Skip dummy head node
         typename DLinkedList<T>::Node *right_node = right_list.head->next; // Skip dummy head node
         this->clear();
-        this->addDummyNodes(); // Add dummy head and tail nodes
         while (left_node != left_list.tail && right_node != right_list.tail)
         {
             if (compare(left_node->data, right_node->data, comparator) <= 0)
@@ -75,15 +74,6 @@ public:
             this->add(right_node->data);
             right_node = right_node->next;
         }
-    }
-
-private:
-    void addDummyNodes()
-    {
-        this->head = new typename DLinkedList<T>::Node();
-        this->tail = new typename DLinkedList<T>::Node();
-        this->head->next = this->tail;
-        this->tail->prev = this->head;
     }
 
 protected:

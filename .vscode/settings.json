@@ -17,6 +17,12 @@
         "string": "cpp",
         "string_view": "cpp",
         "span": "cpp",
-        "sstream": "cpp"
+        "sstream": "cpp",
+        "atomic": "cpp",
+        "deque": "cpp",
+        "list": "cpp",
+        "vector": "cpp",
+        "fstream": "cpp",
+        "system_error": "cpp"
     }
 }
