@@ -69,7 +69,8 @@ public:
         // Calculate in_degrees
         for (T vertex : sorted_list)
         {
-            DLinkedList<T> neighbors = this->graph->getOutwardEdges(vertex);
+            DLinkedListSE<T> neighbors = this->graph->getOutwardEdges(vertex);
+            neighbors.sort();
             for (T neighbor : neighbors)
             {
                 in_degrees.put(neighbor, in_degrees.get(neighbor) + 1);
@@ -91,6 +92,7 @@ public:
             T current = queue.pop();
             return_list.add(current);
             DLinkedList<T> neighbors = this->graph->getOutwardEdges(current);
+            neighbors.sort();
             for (T neighbor : neighbors)
             {
                 in_degrees.put(neighbor, in_degrees.get(neighbor) - 1);
