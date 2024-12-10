@@ -123,11 +123,12 @@ public:
             visited.put(vertex, false);
         }
         // Perform DFS
-        for (T vertex : sorted_list)
+        for (typename DLinkedList<T>::BWDIterator it = sorted_list.bbegin(); it != sorted_list.bend(); it--)
         {
+            T vertex = *it;
             if (visited.get(vertex) == false)
             {
-                dfs(vertex, visited, stack);
+                dfs(vertex, visited, stack, sorted);
             }
         }
         DLinkedList<T> return_list;
@@ -138,19 +139,90 @@ public:
         }
         return return_list;
     }
+    // DLinkedList<T> dfsSort(bool sorted = true)
+    // {
+    //     DLinkedListSE<T> sorted_list = this->graph->vertices();
+    //     if (sorted == true)
+    //     {
+    //         sorted_list.sort();
+    //     }
+    //     // Initialize visited with false
+    //     xMap<T, bool> visited(this->hash_code);
+    //     xMap<T, bool> in_stack(this->hash_code);
+    //     for (T vertex : sorted_list)
+    //     {
+    //         visited.put(vertex, false);
+    //         in_stack.put(vertex, false);
+    //     }
+
+    //     Stack<T> dfs_stack;
+    //     Stack<T> post_order_stack;
+
+    //     // Perform DFS iteratively
+    //     for (T vertex : sorted_list)
+    //     {
+    //         if (visited.get(vertex) == false)
+    //         {
+    //             dfs_stack.push(vertex); // Start DFS for unvisited vertex
+    //         }
+
+    //         while (dfs_stack.empty() == false)
+    //         {
+    //             T current = dfs_stack.peek();
+
+    //             if (in_stack.get(current) == true) // Cycle detected
+    //             {
+    //                 dfs_stack.pop();
+    //                 if (visited.get(current) == false)
+    //                 {
+    //                     visited.put(current, true);
+    //                     post_order_stack.push(current);
+    //                 }
+    //                 continue;
+    //             }
+    //             in_stack.put(current, true);
+    //             // Push unvisited neighbors
+    //             DLinkedListSE<T> neighbors = this->graph->getOutwardEdges(current);
+    //             if (sorted == true)
+    //             {
+    //                 neighbors.sort();
+    //             }
+    //             for (T neighbor : neighbors)
+    //             {
+    //                 if (visited.get(neighbor) == false && in_stack.get(neighbor) == false)
+    //                 {
+    //                     dfs_stack.push(neighbor);
+    //                 }
+    //             }
+    //         }
+    //     }
+
+    //     // Construct the return list
+    //     DLinkedList<T> return_list;
+    //     while (post_order_stack.empty() == false)
+    //     {
+    //         return_list.add(post_order_stack.pop());
+    //     }
+    //     return return_list;
+    // }
 
 protected:
     // Helper functions
     // (Finished)
-    void dfs(T vertex, xMap<T, bool> &visited, Stack<T> &stack)
+    void dfs(T vertex, xMap<T, bool> &visited, Stack<T> &stack, bool sorted = true)
     {
         visited.put(vertex, true);
-        DLinkedList<T> neighbors = this->graph->getOutwardEdges(vertex);
-        for (T neighbor : neighbors)
+        DLinkedListSE<T> neighbors = this->graph->getOutwardEdges(vertex);
+        if (sorted == true)
         {
+            neighbors.sort();
+        }
+        for (typename DLinkedList<T>::BWDIterator it = neighbors.bbegin(); it != neighbors.bend(); it--)
+        {
+            T neighbor = *it;
             if (visited.get(neighbor) == false)
             {
-                dfs(neighbor, visited, stack);
+                dfs(neighbor, visited, stack, sorted);
             }
         }
         stack.push(vertex);

@@ -61,7 +61,9 @@ public:
         typename AbstractGraph<T>::Edge *edge = from_node->getEdge(to_node);
         if (edge == nullptr)
         {
-            throw EdgeNotFoundException(this->edge2Str(*edge));
+            stringstream os;
+            os << "E(" << this->vertex2str(from) << "," << this->vertex2str(to) << ")";
+            throw EdgeNotFoundException(os.str());
         }
         from_node->removeTo(to_node);
     }
@@ -78,7 +80,7 @@ public:
         {
             typename AbstractGraph<T>::VertexNode *current_node = *it;
             current_node->removeTo(node);
-            node->removeTo(current_node); //
+            node->removeTo(current_node);
             it++;
         }
         this->nodeList.removeItem(node);

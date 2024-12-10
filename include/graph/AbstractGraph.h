@@ -16,7 +16,7 @@
 #include "graph/IGraph.h"
 #include <string>
 #include <sstream>
-#include <iomanip> // std::setw
+#include <iomanip>
 using namespace std;
 
 template <class T>
@@ -95,6 +95,10 @@ public:
     // Add a vertex to the graph (Finished)
     virtual void add(T vertex)
     {
+        if (this->contains(vertex))
+        {
+            return;
+        }
         VertexNode *node = new VertexNode(vertex, vertexEQ, vertex2str);
         nodeList.add(node);
     }
@@ -171,6 +175,10 @@ public:
     // Remove all vertices from the graph (Finished)
     virtual void clear()
     {
+        for (VertexNode *node : this->nodeList)
+        {
+            node->adList.clear();
+        }
         nodeList.clear();
     }
     // Return the number of outward edges from the given vertex (Finished)
@@ -197,12 +205,9 @@ public:
     virtual DLinkedList<T> vertices()
     {
         DLinkedList<T> return_list;
-        auto it = this->nodeList.begin();
-        while (it != this->nodeList.end())
+        for (VertexNode *node : this->nodeList)
         {
-            VertexNode *current_node = *it;
-            return_list.add(current_node->vertex);
-            it++;
+            return_list.add(node->vertex);
         }
         return return_list;
     }

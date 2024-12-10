@@ -7,9 +7,9 @@
  * Link Group : https://www.facebook.com/groups/khmt.ktmt.cse.bku
  * Date: 05.12.2024
 
- ! build code graph :   g++ -std=c++17 -o main -Iinclude -Itest main.cpp test/unit_test/sort_topo/unit_test.cpp test/unit_test/sort_topo/test/*.cpp  -DTEST_SORT_TOPO
+ ! build code graph : g++ -std=c++17 -o main -Iinclude -Itest main.cpp test/unit_test/sort_topo/unit_test.cpp test/unit_test/sort_topo/test/*.cpp  -DTEST_SORT_TOPO
 
-  ! build code topo : g++ -fsanitize=address -fsanitize=undefined -std=c++17 -o main -Iinclude -Itest main.cpp test/unit_test/graph/unit_test.cpp test/unit_test/graph/test/*.cpp  -DTEST_GRAPH
+  ! build code topo : g++ -std=c++17 -o main -Iinclude -Itest main.cpp test/unit_test/graph/unit_test.cpptest/unit_test/graph/test/*.cpp  -DTEST_GRAPH
 
 
  * run code

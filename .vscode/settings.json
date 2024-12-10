@@ -23,6 +23,10 @@
         "list": "cpp",
         "vector": "cpp",
         "fstream": "cpp",
-        "system_error": "cpp"
+        "system_error": "cpp",
+        "regex": "cpp",
+        "expected": "cpp",
+        "optional": "cpp",
+        "variant": "cpp"
     }
 }
