@@ -44,13 +44,20 @@ public:
     // (Finished)
     T pop()
     {
-        T item = this->list.get(0);
-        this->list.removeAt(0);
+        if (this->empty() == true)
+        {
+            throw Underflow("Queue");
+        }
+        T item = this->list.removeAt(0);
         return item;
     }
     // (Finished)
     T &peek()
     {
+        if (this->empty() == true)
+        {
+            throw Underflow("Queue");
+        }
         return this->list.get(0);
     }
     // (Finished)

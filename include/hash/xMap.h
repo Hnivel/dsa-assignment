@@ -289,20 +289,16 @@ V xMap<K, V>::put(K key, V value)
 {
     int index = this->hashCode(key, capacity);
     DLinkedList<Entry *> &collision = this->table[index];
-    auto it = collision.begin();
-    while (it != collision.end())
+    for (Entry *entry : collision)
     {
-        Entry *entry = *it;
         if (this->keyEQ(entry->key, key))
         {
-            V return_value = entry->value;
+            V old_value = entry->value;
             entry->value = value;
-            return return_value;
+            return old_value;
         }
-        it++;
     }
-    Entry *temporary = new Entry(key, value);
-    collision.add(temporary);
+    collision.add(new Entry(key, value));
     this->count++;
     this->ensureLoadFactor(this->count);
     return value;
@@ -313,15 +309,12 @@ V &xMap<K, V>::get(K key)
 {
     int index = hashCode(key, capacity);
     DLinkedList<Entry *> &collision = this->table[index];
-    auto it = collision.begin();
-    while (it != collision.end())
+    for (Entry *entry : collision)
     {
-        Entry *entry = *it;
         if (this->keyEQ(entry->key, key))
         {
             return entry->value;
         }
-        it++;
     }
     stringstream os;
     os << "key (" << key << ") is not found";
@@ -333,22 +326,19 @@ V xMap<K, V>::remove(K key, void (*deleteKeyInMap)(K))
 {
     int index = hashCode(key, capacity);
     DLinkedList<Entry *> &collision = this->table[index];
-    auto it = collision.begin();
-    while (it != collision.end())
+    for (Entry *entry : collision)
     {
-        Entry *entry = *it;
         if (this->keyEQ(entry->key, key))
         {
-            V return_value = entry->value;
+            V value = entry->value;
+            collision.removeItem(entry, xMap<K, V>::deleteEntry);
+            this->count--;
             if (deleteKeyInMap != nullptr)
             {
                 deleteKeyInMap(entry->key);
             }
-            collision.removeItem(entry, xMap<K, V>::deleteEntry); // it -> entry
-            this->count--;
-            return return_value;
+            return value;
         }
-        it++;
     }
     //
     stringstream os;
@@ -361,12 +351,12 @@ bool xMap<K, V>::remove(K key, V value, void (*deleteKeyInMap)(K), void (*delete
 {
     int index = this->hashCode(key, capacity);
     DLinkedList<Entry *> &collision = this->table[index];
-    auto it = collision.begin();
-    while (it != collision.end())
+    for (Entry *entry : collision)
     {
-        Entry *entry = *it;
         if (this->keyEQ(entry->key, key) && this->valueEQ(entry->value, value))
         {
+            collision.removeItem(entry, xMap<K, V>::deleteEntry);
+            this->count--;
             if (deleteKeyInMap != nullptr)
             {
                 deleteKeyInMap(entry->key);
@@ -375,11 +365,8 @@ bool xMap<K, V>::remove(K key, V value, void (*deleteKeyInMap)(K), void (*delete
             {
                 deleteValueInMap(entry->value);
             }
-            collision.removeItem(entry, xMap<K, V>::deleteEntry); // it -> entry
-            this->count--;
             return true;
         }
-        it++;
     }
     return false;
 }
@@ -389,15 +376,12 @@ bool xMap<K, V>::containsKey(K key)
 {
     int index = this->hashCode(key, capacity);
     DLinkedList<Entry *> &collision = this->table[index];
-    auto it = collision.begin();
-    while (it != collision.end())
+    for (Entry *entry : collision)
     {
-        Entry *entry = *it;
-        if (this->keyEQ(entry->key, key) == true)
+        if (this->keyEQ(entry->key, key))
         {
             return true;
         }
-        it++;
     }
     return false;
 }
@@ -408,15 +392,12 @@ bool xMap<K, V>::containsValue(V value)
     for (int i = 0; i < this->capacity; i++)
     {
         DLinkedList<Entry *> &collision = table[i];
-        auto it = collision.begin();
-        while (it != collision.end())
+        for (Entry *entry : collision)
         {
-            Entry *entry = *it;
-            if (this->valueEQ(entry->value, value) == true)
+            if (this->valueEQ(entry->value, value))
             {
                 return true;
             }
-            it++;
         }
     }
     return false;
@@ -437,7 +418,7 @@ int xMap<K, V>::size()
 template <class K, class V>
 void xMap<K, V>::clear()
 {
-    removeInternalData();
+    this->removeInternalData();
     this->capacity = 10;
     this->count = 0;
     this->table = new DLinkedList<Entry *>[capacity];
@@ -450,12 +431,9 @@ DLinkedList<K> xMap<K, V>::keys()
     for (int i = 0; i < capacity; i++)
     {
         DLinkedList<Entry *> &collision = this->table[i];
-        auto it = collision.begin();
-        while (it != collision.end())
+        for (Entry *entry : collision)
         {
-            Entry *entry = *it;
             return_list.add(entry->key);
-            it++;
         }
     }
     return return_list;
@@ -468,12 +446,9 @@ DLinkedList<V> xMap<K, V>::values()
     for (int i = 0; i < capacity; i++)
     {
         DLinkedList<Entry *> &collision = this->table[i];
-        auto it = collision.begin();
-        while (it != collision.end())
+        for (Entry *entry : collision)
         {
-            Entry *entry = *it;
             return_list.add(entry->value);
-            it++;
         }
     }
     return return_list;

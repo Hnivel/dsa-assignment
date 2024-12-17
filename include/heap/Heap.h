@@ -228,7 +228,7 @@ T Heap<T>::pop()
 {
     if (this->count == 0)
     {
-        throw std::underflow_error("Calling peek with an empty heap.");
+        throw std::underflow_error("Calling pop with an empty heap.");
     }
     T return_element = this->elements[0];
     this->elements[0] = this->elements[this->count - 1];

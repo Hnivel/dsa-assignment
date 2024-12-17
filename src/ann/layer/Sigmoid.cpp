@@ -34,7 +34,7 @@ Sigmoid::~Sigmoid()
 xt::xarray<double> Sigmoid::forward(xt::xarray<double> X)
 {
     this->m_aCached_Y = 1.0 / (1.0 + xt::exp(-X));
-    return m_aCached_Y;
+    return this->m_aCached_Y;
 }
 // (Done) //
 xt::xarray<double> Sigmoid::backward(xt::xarray<double> DY)

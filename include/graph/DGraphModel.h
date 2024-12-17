@@ -75,13 +75,10 @@ public:
         {
             throw VertexNotFoundException(this->vertex2str(vertex));
         }
-        auto it = this->nodeList.begin();
-        while (it != this->nodeList.end())
+        for (typename AbstractGraph<T>::VertexNode *current_node : this->nodeList)
         {
-            typename AbstractGraph<T>::VertexNode *current_node = *it;
             current_node->removeTo(node);
             node->removeTo(current_node);
-            it++;
         }
         this->nodeList.removeItem(node);
     }

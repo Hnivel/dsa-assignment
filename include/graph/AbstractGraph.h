@@ -105,18 +105,18 @@ public:
     // Check if the graph contains the given vertex (Finished)
     virtual bool contains(T vertex)
     {
-        VertexNode *node = getVertexNode(vertex);
+        VertexNode *node = this->getVertexNode(vertex);
         return (node != nullptr);
     }
     // Return the weight of the edge of the given vertices (Finished)
     virtual float weight(T from, T to)
     {
-        VertexNode *from_node = getVertexNode(from);
+        VertexNode *from_node = this->getVertexNode(from);
         if (from_node == nullptr)
         {
             throw VertexNotFoundException(this->vertex2str(from));
         }
-        VertexNode *to_node = getVertexNode(to);
+        VertexNode *to_node = this->getVertexNode(to);
         if (to_node == nullptr)
         {
             throw VertexNotFoundException(this->vertex2str(to));
@@ -133,7 +133,7 @@ public:
     // Return the list of vertices that this vertex has outward edges to (Finished)
     virtual DLinkedList<T> getOutwardEdges(T from)
     {
-        VertexNode *from_node = getVertexNode(from);
+        VertexNode *from_node = this->getVertexNode(from);
         if (from_node == nullptr)
         {
             throw VertexNotFoundException(this->vertex2str(from));
@@ -143,34 +143,30 @@ public:
     // Return the list of vertices that have outward edges to this vertex (Finished)
     virtual DLinkedList<T> getInwardEdges(T to)
     {
-        VertexNode *to_node = getVertexNode(to);
+        VertexNode *to_node = this->getVertexNode(to);
         if (to_node == nullptr)
         {
             throw VertexNotFoundException(this->vertex2str(to));
         }
         DLinkedList<T> return_list;
-        auto it = this->nodeList.begin();
-        while (it != this->nodeList.end())
+        for (VertexNode *node : this->nodeList)
         {
-            VertexNode *current_node = *it;
-            Edge *edge = current_node->getEdge(to_node);
-            if (edge != nullptr)
+            if (node->getEdge(to_node) != nullptr)
             {
-                return_list.add(current_node->vertex);
+                return_list.add(node->vertex);
             }
-            it++;
         }
         return return_list;
     }
     // Return the number of vertices in the graph (Finished)
     virtual int size()
     {
-        return nodeList.size();
+        return this->nodeList.size();
     }
     // Return true if the graph is empty (Finished)
     virtual bool empty()
     {
-        return nodeList.empty();
+        return this->nodeList.empty();
     }
     // Remove all vertices from the graph (Finished)
     virtual void clear()
@@ -179,12 +175,12 @@ public:
         {
             node->adList.clear();
         }
-        nodeList.clear();
+        this->nodeList.clear();
     }
     // Return the number of outward edges from the given vertex (Finished)
     virtual int inDegree(T vertex)
     {
-        VertexNode *node = getVertexNode(vertex);
+        VertexNode *node = this->getVertexNode(vertex);
         if (node == nullptr)
         {
             throw VertexNotFoundException(this->vertex2str(vertex));
@@ -320,7 +316,7 @@ public:
         // Return the vertex (Finished)
         T &getVertex()
         {
-            return vertex;
+            return this->vertex;
         }
         // Connect this vertex to the given vertex (Finished)
         void connect(VertexNode *to, float weight = 0)
@@ -339,26 +335,21 @@ public:
         DLinkedList<T> getOutwardEdges()
         {
             DLinkedList<T> return_list;
-            auto it = this->adList.begin();
-            while (it != this->adList.end())
+            for (Edge *edge : this->adList)
             {
-                Edge *current_edge = *it;
-                return_list.add(current_edge->to->vertex);
-                it++;
+                return_list.add(edge->to->vertex);
             }
             return return_list;
         }
         // Return the edge from this vertex to the given vertex (Finished)
         Edge *getEdge(VertexNode *to)
         {
-            auto it = this->adList.begin();
-            while (it != this->adList.end())
+            for (Edge *edge : this->adList)
             {
-                if ((*it)->from->equals(this) && (*it)->to->equals(to))
+                if (edge->to->equals(to))
                 {
-                    return *it;
+                    return edge;
                 }
-                it++;
             }
             return nullptr;
         }
@@ -375,12 +366,9 @@ public:
             {
                 return;
             }
-            bool removed = this->adList.removeItem(edge);
-            if (removed == true)
-            {
-                to->inDegree_ -= 1;
-                this->outDegree_ -= 1;
-            }
+            this->adList.removeItem(edge);
+            to->inDegree_ -= 1;
+            this->outDegree_ -= 1;
         }
         // Return the number of inward edges (Finished)
         int inDegree()
@@ -423,7 +411,11 @@ public:
         // Check if this edge is equal to the given edge (Finished)
         bool equals(Edge *edge)
         {
-            return (this->from->equals(edge->from) && this->to->equals(edge->to));
+            if (edge == nullptr)
+            {
+                return false;
+            }
+            return (this->from->equals(edge->from) && this->to->equals(edge->to) && this->weight == edge->weight);
         }
         // Check if the given edges are equal (Finished)
         static bool edgeEQ(Edge *&edge1, Edge *&edge2)
