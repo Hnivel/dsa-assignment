@@ -43,6 +43,7 @@ public:
         {
             throw VertexNotFoundException(this->vertex2str(to));
         }
+        // Harmony
         if (from_node->equals(to_node))
         {
             from_node->connect(to_node, weight);

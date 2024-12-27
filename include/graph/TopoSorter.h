@@ -84,7 +84,7 @@ public:
             }
             for (T neighbor : neighbors)
             {
-                in_degrees.get(neighbor) -= 1;
+                in_degrees.put(neighbor, in_degrees.get(neighbor) - 1);
                 if (in_degrees.get(neighbor) == 0)
                 {
                     in_degrees.remove(neighbor);

@@ -288,7 +288,7 @@ template <class K, class V>
 V xMap<K, V>::put(K key, V value)
 {
     int index = this->hashCode(key, capacity);
-    DLinkedList<Entry *> &collision = this->table[index];
+    DLinkedList<Entry *> &collision = this->table[index]; 
     for (Entry *entry : collision)
     {
         if (this->keyEQ(entry->key, key))
@@ -308,7 +308,7 @@ template <class K, class V>
 V &xMap<K, V>::get(K key)
 {
     int index = hashCode(key, capacity);
-    DLinkedList<Entry *> &collision = this->table[index];
+    DLinkedList<Entry *> &collision = this->table[index]; // Harmony
     for (Entry *entry : collision)
     {
         if (this->keyEQ(entry->key, key))
@@ -460,7 +460,7 @@ DLinkedList<int> xMap<K, V>::clashes()
     DLinkedList<int> return_list;
     for (int i = 0; i < capacity; i++)
     {
-        return_list.add(this->table[i].size());
+        return_list.add(this->table[i].size()); // Harmony
     }
     return return_list;
 }

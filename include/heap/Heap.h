@@ -215,7 +215,7 @@ Heap<T>::~Heap()
 }
 // (Done)
 template <class T>
-void Heap<T>::push(T item)
+void Heap<T>::push(T item) // Harmony
 {
     this->ensureCapacity(this->count + 1);
     elements[this->count] = item;
@@ -249,7 +249,7 @@ const T Heap<T>::peek()
 }
 // (Done)
 template <class T>
-void Heap<T>::remove(T item, void (*removeItemData)(T))
+void Heap<T>::remove(T item, void (*removeItemData)(T)) // Harmony
 {
     int index = this->getItem(item);
     if (index == -1)
